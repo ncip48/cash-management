@@ -89,8 +89,8 @@ export function DataTable<TData extends { id: string }, TValue>({
                     </Button>
                 )}
             </div>
-            <div className="rounded-md border">
-                <Table>
+            <div className="overflow-x-auto rounded-md border sm:overflow-visible">
+                <Table className="min-w-full">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
