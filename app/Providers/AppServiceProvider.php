@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // if (env(key: 'APP_ENV') == 'local') {
-        // URL::forceScheme(scheme: 'https');
+        URL::forceScheme(scheme: 'https');
         // }
 
         Blueprint::macro('creatorAndUpdater', function () {
