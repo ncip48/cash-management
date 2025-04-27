@@ -3,7 +3,7 @@ name: Build & Deploy Laravel Assets via FTP
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
@@ -26,7 +26,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT || 21 }}
           local-dir: public/build/
-          server-dir: attendance.dotech-digital.com/public/build/
+          server-dir: finance.dotech-digital.com/public/build/
           protocol: ftp
           exclude: |
             **/.git*
