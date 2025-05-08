@@ -30,7 +30,7 @@ const columns: ExtendedColumnDef<PlanItemType, PlanItemType>[] = [
                     value={row.original.name}
                     isEditable={true}
                     id={row.original.id}
-                    routeFn={(id) => route('item-plan.update', id)}
+                    routeFn={(id) => route('plan-item.update', id)}
                     fullWidth
                 />
             );
@@ -62,7 +62,7 @@ const columns: ExtendedColumnDef<PlanItemType, PlanItemType>[] = [
                     value={row.original.description || ''}
                     isEditable={true}
                     id={row.original.id}
-                    routeFn={(id) => route('item-plan.update', id)}
+                    routeFn={(id) => route('plan-item.update', id)}
                     fullWidth
                 />
             );
@@ -78,7 +78,7 @@ const columns: ExtendedColumnDef<PlanItemType, PlanItemType>[] = [
                     value={row.original.budget}
                     isEditable={true}
                     id={row.original.id}
-                    routeFn={(id) => route('item-plan.update', id)}
+                    routeFn={(id) => route('plan-item.update', id)}
                     fullWidth
                 />
             );
