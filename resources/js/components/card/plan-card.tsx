@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import {
@@ -12,12 +13,15 @@ import {
 } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useRef } from 'react';
 
 import { PlanItemType } from '@/types/plan';
 import { formatRupiah } from '@/utils/currecny';
-import { CheckCircle2Icon, XCircleIcon } from 'lucide-react';
+import { makeToast } from '@/utils/toast';
+import { router, useForm } from '@inertiajs/react';
+import EditableStatus from '../editable-status';
 import EditableText from '../editable-text';
+import { Input } from '../ui/input';
 
 const columns: ExtendedColumnDef<PlanItemType, PlanItemType>[] = [
     {
@@ -32,6 +36,7 @@ const columns: ExtendedColumnDef<PlanItemType, PlanItemType>[] = [
                     id={row.original.id}
                     routeFn={(id) => route('plan-item.update', id)}
                     fullWidth
+                    deleteFn={(id) => route('plan-item.destroy', id)}
                 />
             );
         },
@@ -42,13 +47,12 @@ const columns: ExtendedColumnDef<PlanItemType, PlanItemType>[] = [
         header: () => <div className="text-center">Done</div>,
         cell: ({ row }) => {
             return (
-                <div className="flex items-center justify-center">
-                    {row.original.is_realized ? (
-                        <CheckCircle2Icon className="text-success h-5 w-5 text-center" />
-                    ) : (
-                        <XCircleIcon className="h-5 w-5 text-center text-red-800" />
-                    )}
-                </div>
+                <EditableStatus
+                    id={row.original.id}
+                    name="is_realized"
+                    value={row.original.is_realized == 0 ? false : true}
+                    routeFn={(id) => route('plan-item.update', id)} // adjust as needed
+                />
             );
         },
     },
@@ -95,6 +99,7 @@ interface ExtendedColumnDef<TData, TValue> extends Omit<ColumnDef<TData, TValue>
 
 interface DataTableProps<TData extends { id: string }> {
     data: PlanItemType[];
+    planId: string;
     onAdd?: () => void;
     onDelete?: (id: string) => void;
     onEdit?: (data: TData) => void;
@@ -106,7 +111,7 @@ interface DataTableProps<TData extends { id: string }> {
     prohibittedMessage?: string;
 }
 
-export function PlanCard<TData extends { id: string }, TValue>({ data }: DataTableProps<TData>) {
+export function PlanCard<TData extends { id: string }, TValue>({ data, planId }: DataTableProps<TData>) {
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
     const table = useReactTable({
@@ -120,6 +125,48 @@ export function PlanCard<TData extends { id: string }, TValue>({ data }: DataTab
             columnFilters,
         },
     });
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const {
+        data: inputData,
+        setData,
+        post,
+        processing,
+        reset,
+    } = useForm({
+        name: '',
+        plan_id: planId,
+    });
+
+    const handleSubmit = () => {
+        try {
+            if (inputData.name.trim() !== '') {
+                post(route('plan-item.store'), {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        reset();
+                        router.reload({ only: ['items'] });
+                        window.location.reload();
+                    },
+                    onError: () => {},
+                });
+            }
+        } catch (error: any) {
+            makeToast({ success: false, message: error.message });
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === ' ' && e.target instanceof HTMLInputElement) {
+            e.stopPropagation();
+        }
+
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSubmit();
+        }
+    };
 
     return (
         <div>
@@ -203,6 +250,24 @@ export function PlanCard<TData extends { id: string }, TValue>({ data }: DataTab
                                 </TableCell>
                             </TableRow>
                         )}
+                        <TableRow>
+                            <TableCell colSpan={1}>
+                                <Input
+                                    ref={inputRef}
+                                    value={inputData.name}
+                                    onChange={(e) => {
+                                        setData('name', e.target.value);
+                                    }}
+                                    onBlur={handleSubmit}
+                                    onKeyDown={handleKeyDown}
+                                    className="w-full"
+                                    onClick={(e) => e.stopPropagation()}
+                                    disabled={processing}
+                                    placeholder="+ new item"
+                                />
+                            </TableCell>
+                            <TableCell colSpan={4} className=""></TableCell>
+                        </TableRow>
                         {data?.length ? (
                             <TableRow>
                                 <TableCell colSpan={3} className="border-r text-right">

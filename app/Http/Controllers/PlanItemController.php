@@ -28,7 +28,21 @@ class PlanItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'plan_id' => ['required', 'string'],
+            ]);
+
+            $validated['budget'] = 0;
+            $validated['created_by'] = auth()->id();
+
+            PlanItem::create($validated);
+
+            return redirect()->route('plan.index')->with('success', 'Item created successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -63,6 +77,6 @@ class PlanItemController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        PlanItem::find($id)->delete();
     }
 }

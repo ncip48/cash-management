@@ -22,9 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // if (env(key: 'APP_ENV') == 'local') {
-        URL::forceScheme(scheme: 'https');
-        // }
+
+        if (!app()->environment('local')) {
+            URL::forceScheme(scheme: 'https');
+        }
 
         Blueprint::macro('creatorAndUpdater', function () {
             $this->uuid('created_by');

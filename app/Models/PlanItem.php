@@ -18,6 +18,7 @@ class PlanItem extends Model
         'budget',
         'description',
         'is_realized',
+        'created_by',
     ];
 
     public function plan()

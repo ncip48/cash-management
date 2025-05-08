@@ -101,7 +101,7 @@ function Page() {
                                     </div>
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    <PlanCard key={index} onAdd={() => setModal({ open: true, item: null })} data={item.items} />
+                                    <PlanCard key={index} onAdd={() => setModal({ open: true, item: null })} data={item.items} planId={item.id} />
                                 </AccordionContent>
                             </AccordionItem>
                         );
