@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PlanController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,6 +26,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Finance
     Route::resource('finance', FinanceController::class);
+
+    // Plan
+    Route::resource('plan', PlanController::class);
 });
 
 require __DIR__ . '/settings.php';

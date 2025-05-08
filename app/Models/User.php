@@ -50,4 +50,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function plans()
+    {
+        return $this->hasMany(Plan::class, 'created_by');
+    }
+
+    public function sharedPlans()
+    {
+        return $this->belongsToMany(Plan::class, 'plan_user');
+    }
 }
