@@ -14,7 +14,7 @@ export function CategoryForm({ open, setOpen, item }: { open: boolean; setOpen: 
 
     const isEdit = !!item;
 
-    const { setData, patch, post, errors, processing } = useForm<{
+    const { setData, patch, post, errors, processing, clearErrors } = useForm<{
         name: string;
         parent_id: null | string;
     }>({
@@ -39,6 +39,12 @@ export function CategoryForm({ open, setOpen, item }: { open: boolean; setOpen: 
             onSuccess: () => setOpen(false),
         });
     };
+
+    useEffect(() => {
+        if (open) {
+            clearErrors();
+        }
+    }, [open]);
 
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>

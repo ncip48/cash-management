@@ -17,7 +17,7 @@ export function CategoryForm({ open, setOpen, item }: { open: boolean; setOpen: 
 
     const isEdit = !!item;
 
-    const { setData, patch, post, errors, processing, data, reset } = useForm<{
+    const { setData, patch, post, errors, processing, data, reset, clearErrors } = useForm<{
         date: string;
         amount: number;
         source_id: null | string;
@@ -59,6 +59,12 @@ export function CategoryForm({ open, setOpen, item }: { open: boolean; setOpen: 
     useEffect(() => {
         if (!open) {
             reset();
+        }
+    }, [open]);
+
+    useEffect(() => {
+        if (open) {
+            clearErrors();
         }
     }, [open]);
 

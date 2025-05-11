@@ -12,6 +12,8 @@ class PlanUser extends Model
 {
     use HasFactory, HasUuids, SoftDeletes, Notifiable;
 
+    protected $table = 'plan_user';
+
     protected $fillable = [
         'plan_id',
         'user_id',

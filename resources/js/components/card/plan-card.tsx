@@ -97,21 +97,12 @@ interface ExtendedColumnDef<TData, TValue> extends Omit<ColumnDef<TData, TValue>
     customClassName?: string;
 }
 
-interface DataTableProps<TData extends { id: string }> {
+interface DataTableProps {
     data: PlanItemType[];
     planId: string;
-    onAdd?: () => void;
-    onDelete?: (id: string) => void;
-    onEdit?: (data: TData) => void;
-    add?: boolean;
-    edit?: boolean;
-    leftAction?: (item: TData) => React.ReactNode;
-    processingDelete?: boolean;
-    prohibittedAction?: number[];
-    prohibittedMessage?: string;
 }
 
-export function PlanCard<TData extends { id: string }, TValue>({ data, planId }: DataTableProps<TData>) {
+export function PlanCard<TData extends { id: string }, TValue>({ data, planId }: DataTableProps) {
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
     const table = useReactTable({
@@ -147,7 +138,6 @@ export function PlanCard<TData extends { id: string }, TValue>({ data, planId }:
                     onSuccess: () => {
                         reset();
                         router.reload({ only: ['items'] });
-                        window.location.reload();
                     },
                     onError: () => {},
                 });

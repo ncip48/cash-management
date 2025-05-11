@@ -20,6 +20,7 @@ class Plan extends Model
         'visibility',
         'estimation_date',
         'is_realized',
+        'created_by',
     ];
 
     public function owner()

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plan;
+use App\Models\PlanUser;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class PlanController extends Controller
@@ -16,22 +19,25 @@ class PlanController extends Controller
         $user = auth()->user(); // or auth()->user()
 
         $plans = Plan::where(function ($query) use ($user) {
-            $query->where('created_by', $user->id) // Private plans (your own)
-                ->where('visibility', 'private');
+            $query->whereIn('visibility', ['private', 'shared_users'])
+                ->where('created_by', $user->id); // Own private/shared_users plans
         })
-            ->orWhere('visibility', 'shared_all') // Plans shared with all users
+            ->orWhere('visibility', 'shared_all') // Publicly shared plans
             ->orWhere(function ($query) use ($user) {
                 $query->where('visibility', 'shared_users')
                     ->whereHas('sharedUsers', function ($q) use ($user) {
-                        $q->where('user_id', $user->id); // Shared specifically with you
+                        $q->where('user_id', $user->id); // Specifically shared with user
                     });
             })
-            ->with(['owner', 'sharedUsers', 'items']) // Optional: load relations
+            ->with(['owner', 'sharedUsers', 'items']) // Load relationships if needed
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $users = User::where('id', '!=', $user->id)->get();
+
         return Inertia::render('plan/index', [
             'items' => $plans,
+            'users' => $users
         ]);
     }
 
@@ -53,19 +59,19 @@ class PlanController extends Controller
             'visibility' => 'required|in:private,shared_all,shared_users',
             'estimation_date' => 'nullable|date',
             'is_realized' => 'boolean',
-            'shared_user_ids' => 'array',
+            'shared_user_ids' => 'array' . ($request['visibility'] === 'shared_users' ? '|min:1' : ''),
         ]);
 
         $plan = Plan::create([
             'name' => $validated['name'],
-            'user_id' => auth()->id(),
+            'created_by' => auth()->id(),
             'visibility' => $validated['visibility'],
             'estimation_date' => $validated['estimation_date'] ?? null,
             'is_realized' => $validated['is_realized'] ?? false,
         ]);
 
         // If shared_users, attach users
-        if ($plan->visibility === 'shared_users' && !empty($validated['shared_user_ids'])) {
+        if ($plan->visibility === 'shared_users') {
             $plan->sharedUsers()->sync($validated['shared_user_ids']);
         }
 
@@ -93,10 +99,30 @@ class PlanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $item = Plan::find($id);
-        $request->validate(['name' => 'required|string|max:255']);
-        $item->update(['name' => $request->name]);
-        return back(); // or Inertia::location(route(...)) if needed
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'visibility' => 'in:private,shared_all,shared_users',
+            'estimation_date' => 'nullable|date',
+            'is_realized' => 'boolean',
+            'shared_user_ids' => 'array' . ($request['visibility'] === 'shared_users' ? '|min:1' : ''),
+        ]);
+
+        $plan = Plan::find($id);
+        $plan->update([
+            'name' => $validated['name'],
+            'visibility' => $validated['visibility'],
+            'estimation_date' => $validated['estimation_date'] ?? null,
+            'is_realized' => $validated['is_realized'] ?? false,
+        ]);
+
+        // If shared_users, attach users
+        if ($plan->visibility === 'shared_users') {
+            $plan->sharedUsers()->sync($validated['shared_user_ids']);
+        } else {
+            $plan->sharedUsers()->detach();
+        }
+
+        return redirect()->route('plan.index')->with('success', 'Plan updated successfully.');
     }
 
     /**
@@ -104,6 +130,6 @@ class PlanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Plan::find($id)->delete();
     }
 }

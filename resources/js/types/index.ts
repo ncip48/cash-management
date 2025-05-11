@@ -36,7 +36,7 @@ export interface SharedData {
 }
 
 export interface User {
-    id: number;
+    id: string;
     name: string;
     email: string;
     avatar?: string;
@@ -52,7 +52,7 @@ export type PageProps<T> = {
     wsUrl: string;
     auth: {
         user: {
-            id: number;
+            id: string;
             name: string;
             email: string;
         };

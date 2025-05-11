@@ -6,6 +6,7 @@ import { makeToast } from '@/utils/toast';
 import { useForm } from '@inertiajs/react';
 import { Trash2Icon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { DeleteDialog } from './dialogs/delete-dialog';
 
 type EditableTextProps = {
     id: number | string;
@@ -51,6 +52,7 @@ export default function EditableText({ id, name, value, isEditable = true, route
         } catch (error: any) {
             makeToast({ success: false, message: error.message });
         }
+        localStorage.removeItem('s');
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -64,6 +66,7 @@ export default function EditableText({ id, name, value, isEditable = true, route
         } else if (e.key === 'Escape') {
             setLocalValue(value);
             setIsEditing(false);
+            localStorage.removeItem('s');
         }
     };
 
@@ -77,7 +80,7 @@ export default function EditableText({ id, name, value, isEditable = true, route
                 preserveScroll: true,
                 onSuccess: () => {
                     makeToast({ success: true, message: 'Success' });
-                    window.location.reload();
+                    // window.location.reload();
                 },
                 onError: () => makeToast({ success: false, message: 'Error' }),
             });
@@ -107,6 +110,7 @@ export default function EditableText({ id, name, value, isEditable = true, route
                         onClick={(e) => {
                             e.stopPropagation();
                             if (isEditable) {
+                                localStorage.setItem('s', String(id));
                                 setIsEditing(true);
                                 setTimeout(() => inputRef.current?.focus(), 0);
                             }
@@ -125,13 +129,13 @@ export default function EditableText({ id, name, value, isEditable = true, route
                     </span>
 
                     {deleteFn && (
-                        <Trash2Icon
-                            className="text-default invisible h-4 w-4 cursor-pointer group-hover:visible"
-                            onClick={(e) => {
-                                e.stopPropagation();
+                        <DeleteDialog
+                            onClick={() => {
                                 deleteAction(String(id));
                             }}
-                        />
+                        >
+                            <Trash2Icon className="text-default invisible h-4 w-4 cursor-pointer group-hover:visible" />
+                        </DeleteDialog>
                     )}
                 </div>
             )}

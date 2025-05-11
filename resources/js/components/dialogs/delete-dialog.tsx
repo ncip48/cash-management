@@ -12,7 +12,7 @@ import {
 
 import React from 'react';
 
-export function DeleteDialog({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+export function DeleteDialog({ children, onClick }: { children: React.ReactNode; onClick: (e: React.MouseEvent<HTMLButtonElement>) => void }) {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -22,7 +22,9 @@ export function DeleteDialog({ children, onClick }: { children: React.ReactNode;
                     <AlertDialogDescription>Data will be permanently deleted! It cannot be recovered!</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+                    <AlertDialogCancel className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                        Cancel
+                    </AlertDialogCancel>
                     <AlertDialogAction onClick={onClick} type="button" className="cursor-pointer">
                         Yes
                     </AlertDialogAction>
