@@ -3,11 +3,11 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookHeart, HandCoins, LayoutGrid, Lock, SquareMenu } from 'lucide-react';
+import { Book, BookHeart, HandCoins, LayoutGrid, Lock, SquareMenu } from 'lucide-react';
 import moment from 'moment';
 import AppLogo from './app-logo';
 
-const planStartDate = moment('2025-05-07');
+const planStartDate = moment('2025-05-20');
 const oneWeekLater = moment(planStartDate).add(7, 'days');
 const today = moment();
 
@@ -35,9 +35,14 @@ const mainNavItems: NavItem[] = [
         icon: HandCoins,
     },
     {
-        title: `Plan ${isNew ? '[New]' : ''}`,
+        title: 'Plan',
         url: '/plan',
         icon: BookHeart,
+    },
+    {
+        title: `CV ${isNew ? '[New]' : ''}`,
+        url: '/cv',
+        icon: Book,
     },
     {
         title: 'Role & Permission',

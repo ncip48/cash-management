@@ -27,6 +27,18 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme(scheme: 'https');
         }
 
+        /**
+         * Adds created_by and updated_by columns to track record creation and updates
+         * 
+         * @method creatorAndUpdater
+         * @return void
+         * 
+         * @example
+         * Schema::create('table_name', function (Blueprint $table) {
+         *     $table->id();
+         *     $table->creatorAndUpdater();
+         * });
+         */
         Blueprint::macro('creatorAndUpdater', function () {
             $this->uuid('created_by');
             $this->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
