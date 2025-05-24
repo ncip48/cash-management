@@ -36,6 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // CV
     Route::resource('cv', CVController::class);
+    Route::get('cv/{id}/print', [CVController::class, 'print'])->name('cv.print');
+    Route::get('cv/{id}/copy', [CVController::class, 'copy'])->name('cv.copy');
 });
 
 require __DIR__ . '/settings.php';
@@ -44,7 +46,7 @@ require __DIR__ . '/auth.php';
 
 Route::get('cv/template/basic', function () {
 
-    $cv = CV::with(['experience', 'education'])->first();
+    $cv = CV::with(['experiences', 'educations'])->first();
 
     return view('cv/template/template-basic', [
         'cv' => $cv,

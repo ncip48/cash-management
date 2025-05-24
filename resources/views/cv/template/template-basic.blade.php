@@ -39,7 +39,7 @@
             flex-wrap: wrap;
             gap: 12px;
             font-size: 13px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .contact i {
@@ -48,7 +48,7 @@
         }
 
         .list {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .flex {
@@ -72,6 +72,15 @@
         .section p {
             margin-bottom: 10px;
         }
+
+        h2 {
+            margin-top: 5px;
+        }
+
+        section {
+            margin: 0;
+            padding: 0;
+        }
     </style>
 </head>
 
@@ -80,7 +89,7 @@
 
         <!-- Biodata & Kontak -->
         <section>
-            <h1 class="bold">{{ $cv->owner_name }}</h1>
+            <h1 class="bold" style="margin-top: 0px;padding-top: 0px;">{{ $cv->owner_name }}</h1>
             <div class="contact">
                 <span><i class="fas fa-phone"></i> {{ $cv->owner_phone }}</span>
                 <span><i class="fas fa-envelope"></i> {{ $cv->owner_email }}</span>
@@ -92,16 +101,20 @@
 
         <!-- Ringkasan Profil -->
         <section>
-            <p>
+            <p style="text-align: justify;margin-top: 0px;">
                 {{ $cv->owner_summary }}
             </p>
         </section>
 
         <!-- Riwayat Pekerjaan -->
-        @if ($cv->experience->isNotEmpty())
+        @if ($cv->experiences->isNotEmpty())
             <section>
-                <h2>Riwayat Pekerjaan</h2>
-                @foreach ($cv->experience ?? [] as $exp)
+                @if ($cv->language == 'id')
+                    <h2>Riwayat Pekerjaan</h2>
+                @else
+                    <h2>Work Experience</h2>
+                @endif
+                @foreach ($cv->experiences ?? [] as $exp)
                     <div class="list">
                         <strong>{{ $exp->position }} - {{ $exp->company_name }}</strong>
                         <div class="flex">
@@ -120,10 +133,14 @@
         @endif
 
         <!-- Riwayat Pendidikan -->
-        @if ($cv->education->isNotEmpty())
+        @if ($cv->educations->isNotEmpty())
             <section>
-                <h2>Riwayat Pendidikan</h2>
-                @foreach ($cv->education ?? [] as $edu)
+                @if ($cv->language == 'id')
+                    <h2>Riwayat Pendidikan</h2>
+                @else
+                    <h2>Education</h2>
+                @endif
+                @foreach ($cv->educations ?? [] as $edu)
                     <div class="list">
                         <strong>{{ $edu->degree }} - {{ $edu->school_name }}</strong>
                         <div class="flex">
@@ -154,7 +171,11 @@
         <!-- Sertifikasi -->
         @if ($cv->certifications->isNotEmpty())
             <section>
-                <h2>Sertifikasi</h2>
+                @if ($cv->language == 'id')
+                    <h2>Sertifikasi</h2>
+                @else
+                    <h2>Certification</h2>
+                @endif
                 @foreach ($cv->certifications ?? [] as $cert)
                     <div class="list">
                         <strong>{{ $cert->title }}</strong>

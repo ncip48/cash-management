@@ -39,12 +39,12 @@ class CV extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function experience()
+    public function experiences()
     {
         return $this->hasMany(CvExperience::class, 'cv_id', 'id')->orderBy('created_at', 'desc');
     }
 
-    public function education()
+    public function educations()
     {
         return $this->hasMany(CvEducation::class, 'cv_id', 'id')->orderBy('created_at', 'desc');
     }

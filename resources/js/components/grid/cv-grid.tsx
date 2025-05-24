@@ -18,7 +18,7 @@ const CvGrid = ({ items }: { items: CVType[] }) => {
 
             {/* Existing CVs */}
             {items.map((item) => (
-                <Link key={item.id} href={`/cv/${String(item.id)}/edit`}>
+                <Link key={item.id} href={`/cv/${String(item.id)}/print`}>
                     <Card className="cursor-pointer gap-1 p-0 transition hover:shadow-lg">
                         <img src={`/img/cv/preview/${item.template.preview}`} alt={item.name} className="h-48 w-full rounded-t-lg object-cover" />
                         <CardContent className="truncate p-2 text-sm">{item.name}</CardContent>
