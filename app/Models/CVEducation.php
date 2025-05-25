@@ -56,16 +56,13 @@ class CVEducation extends Model
     public function getEndDateAttribute()
     {
         if (!$this->attributes['end_date']) {
-            return 'Sekarang';
+            return $this->cv->language == 'id' ? 'Sekarang' : "Now";
         }
         return date('F Y', strtotime($this->attributes['end_date']));
     }
 
     public function getStartDateAttribute()
     {
-        if (!$this->attributes['start_date']) {
-            return 'Sekarang';
-        }
         return date('F Y', strtotime($this->attributes['start_date']));
     }
 }

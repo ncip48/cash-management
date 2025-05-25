@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>CV - John Doe</title>
+    <title>CV - {{ $cv->owner_name }}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
@@ -24,13 +24,13 @@
         h1 {
             font-size: 26px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 0px;
         }
 
         h2 {
             font-size: 18px;
             margin-top: 30px;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 2px solid #000;
             padding-bottom: 5px;
         }
 
@@ -39,7 +39,7 @@
             flex-wrap: wrap;
             gap: 12px;
             font-size: 13px;
-            margin-bottom: 10px;
+            margin-bottom: 0px;
         }
 
         .contact i {
@@ -48,7 +48,7 @@
         }
 
         .list {
-            margin-bottom: 10px;
+            margin-bottom: 11px;
         }
 
         .flex {
@@ -81,6 +81,10 @@
             margin: 0;
             padding: 0;
         }
+
+        .contact span {
+            color: gray
+        }
     </style>
 </head>
 
@@ -91,10 +95,14 @@
         <section>
             <h1 class="bold" style="margin-top: 0px;padding-top: 0px;">{{ $cv->owner_name }}</h1>
             <div class="contact">
-                <span><i class="fas fa-phone"></i> {{ $cv->owner_phone }}</span>
-                <span><i class="fas fa-envelope"></i> {{ $cv->owner_email }}</span>
-                <span><i class="fab fa-linkedin"></i> {{ $cv->owner_linkedin }}</span>
-                <span><i class="fas fa-globe"></i> {{ $cv->owner_website }}</span>
+                <span><i class="fas fa-phone"></i> {{ $cv->owner_phone }} |</span>
+                <span><i class="fas fa-envelope"></i> {{ $cv->owner_email }} |</span>
+                @if ($cv->owner_linkedin)
+                    <span><i class="fab fa-linkedin"></i> {{ $cv->owner_linkedin }} |</span>
+                @endif
+                @if ($cv->owner_website)
+                    <span><i class="fas fa-globe"></i> {{ $cv->owner_website }} |</span>
+                @endif
                 <span><i class="fas fa-map-marker-alt"></i> {{ $cv->owner_address }}</span>
             </div>
         </section>
@@ -117,11 +125,15 @@
                 @foreach ($cv->experiences ?? [] as $exp)
                     <div class="list">
                         <strong>{{ $exp->position }} - {{ $exp->company_name }}</strong>
-                        <div class="flex">
-                            <span>{{ $exp->employment_type ?? 'Full-time' }}</span>
-                            <span>{{ $exp->location ?? 'Jakarta' }}, {{ $exp->start_date }} -
-                                {{ $exp->end_date ?? 'Sekarang' }}</span>
-                        </div>
+                        <table
+                            style="width: 100%; font-size: 13px; color: #555; margin: 0px 0 0px;margin-left:-2px;margin-right:-2px;margin-bottom:-2px;margin-top:-2px">
+                            <tr>
+                                <td style="text-align: left;">{{ $exp->employment_type ?? 'Full-time' }}</td>
+                                <td style="text-align: right;">{{ $exp->location ?? 'Online' }},
+                                    {{ $exp->start_date }} - {{ $exp->end_date }}</td>
+                            </tr>
+                        </table>
+
                         <ul>
                             @foreach (explode("\n", $exp->description) as $desc)
                                 <li>{{ $desc }}</li>
@@ -143,11 +155,16 @@
                 @foreach ($cv->educations ?? [] as $edu)
                     <div class="list">
                         <strong>{{ $edu->degree }} - {{ $edu->school_name }}</strong>
-                        <div class="flex">
-                            <span>GPA: {{ $edu->gpa ?? '3.5' }}</span>
-                            <span>{{ $edu->location ?? 'Depok' }}, {{ $edu->start_date }} -
-                                {{ $edu->end_date }}</span>
-                        </div>
+                        <table
+                            style="width: 100%; font-size: 13px; color: #555; margin: 0px 0 0px;margin-left:-2px;margin-right:-2px;margin-bottom:-2px;margin-top:-2px">
+                            <tr>
+                                <td style="text-align: left;">GPA: {{ $edu->gpa ?? '3.5' }}</td>
+                                <td style="text-align: right;">{{ $edu->location ?? 'Online' }},
+                                    {{ $edu->start_date }}
+                                    - {{ $edu->end_date }}</td>
+                            </tr>
+                        </table>
+
                         @if ($edu->description)
                             <ul>
                                 @foreach (explode("\n", $edu->description) as $desc)
@@ -163,9 +180,14 @@
         <!-- Skill -->
         <section>
             <h2>Skill</h2>
-            <p><strong>Soft Skill:</strong> Komunikasi, Kerja Tim, Problem Solving</p>
-            <p><strong>Hard Skill:</strong> REST API, Database Design, Testing</p>
-            <p><strong>Software Skill:</strong> Laravel, React.js, Git, Figma, Docker</p>
+            <p style="padding:0;margin-bottom:5px;margin-top:0px"><strong>Soft Skill:</strong> Komunikasi, Kerja Tim,
+                Problem Solving
+            </p>
+            <p style="padding:0;margin-bottom:5px;margin-top:0px"><strong>Hard Skill:</strong> REST API, Database
+                Design, Testing</p>
+            <p style="padding:0;margin-bottom:5px;margin-top:0px"><strong>Software Skill:</strong> Laravel, React.js,
+                Git, Figma,
+                Docker</p>
         </section>
 
         <!-- Sertifikasi -->
@@ -179,11 +201,15 @@
                 @foreach ($cv->certifications ?? [] as $cert)
                     <div class="list">
                         <strong>{{ $cert->title }}</strong>
-                        <div class="flex">
-                            <span>{{ $cert->position ?? 'Peserta' }}</span>
-                            <span>{{ $cert->location ?? 'Online' }}, {{ $cert->start_date }} -
-                                {{ $cert->end_date }}</span>
-                        </div>
+                        <table
+                            style="width: 100%; font-size: 13px; color: #555; margin: 0px 0 0px;margin-left:-2px;margin-right:-2px;margin-bottom:-2px;margin-top:-2px">
+                            <tr>
+                                <td style="text-align: left;">{{ $cert->position ?? 'Peserta' }}</td>
+                                <td style="text-align: right;">{{ $cert->location ?? 'Online' }},
+                                    {{ $cert->start_date }} - {{ $cert->end_date }}</td>
+                            </tr>
+                        </table>
+
                         <ul>
                             @foreach (explode("\n", $cert->description) as $desc)
                                 <li>{{ $desc }}</li>
